@@ -1,5 +1,8 @@
 <template>
-  <div ref="chartDiv" style="width: 100%; height: 400px"></div>
+  <div>
+    <p>横棒グラフの表示</p>
+    <div ref="chartDiv" style="width: 100%; height: 400px"></div>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -26,30 +29,38 @@ onMounted(() => {
       })
     );
 
-    // X軸とY軸の設定
-    const xAxis = xyChart.xAxes.push(
-      am5xy.CategoryAxis.new(root, {
-        categoryField: "category",
-        renderer: am5xy.AxisRendererX.new(root, {}),
-      })
-    );
-
+    // 横棒グラフのためのX軸とY軸の設定
     const yAxis = xyChart.yAxes.push(
-      am5xy.ValueAxis.new(root, {
+      am5xy.CategoryAxis.new(root, {
+        categoryField: "category", // Y軸がカテゴリ
         renderer: am5xy.AxisRendererY.new(root, {}),
       })
     );
 
-    // Seriesの作成
+    const xAxis = xyChart.xAxes.push(
+      am5xy.ValueAxis.new(root, {
+        renderer: am5xy.AxisRendererX.new(root, {}),
+      })
+    );
+
+    // 横棒のSeries作成
     const series = xyChart.series.push(
       am5xy.ColumnSeries.new(root, {
         name: "Series 1",
-        xAxis: xAxis,
-        yAxis: yAxis,
-        valueYField: "value",
-        categoryXField: "category",
+        xAxis: xAxis, // X軸は値
+        yAxis: yAxis, // Y軸はカテゴリ
+        valueXField: "value", // 横方向に伸びる値
+        categoryYField: "category", // 縦方向に並ぶカテゴリ
       })
     );
+
+    // 棒の太さを細くする設定
+    series.columns.template.set("height", am5.percent(5)); // 50%の高さに設定
+    // カテゴリ間のスペースを設定
+    (yAxis.get("renderer") as am5xy.AxisRendererY).setAll({
+      cellStartLocation: 0.1,
+      cellEndLocation: 0.9,
+    });
 
     // データの設定
     const data = [
@@ -57,8 +68,8 @@ onMounted(() => {
       { category: "B", value: 70 },
       { category: "C", value: 30 },
     ];
-    xAxis.data.setAll(data);
-    series.data.setAll(data);
+    yAxis.data.setAll(data); // Y軸にデータ
+    series.data.setAll(data); // Seriesにデータ
   }
 });
 
