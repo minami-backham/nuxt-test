@@ -12,6 +12,7 @@
   "dependencies": {
     "@amcharts/amcharts5": "^5.10.7",
     "nuxt": "^3.13.2",
+    "qrcode": "^1.5.4",
     "vue": "latest",
     "vue-router": "latest"
   },
