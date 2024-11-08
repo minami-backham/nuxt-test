@@ -1,46 +1,64 @@
 <template>
-  <div class="flex justify-center">
-    <canvas ref="canvas" :width="250" :height="80"></canvas>
-  </div>
+  <canvas ref="canvas" :width="250" :height="80"></canvas>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onBeforeUnmount, ref, watch } from "vue";
+import { defineComponent, onMounted, ref, watch } from "vue";
 
 export default defineComponent({
   name: "LineChartCanvas",
   props: {
     data: {
-      type: Array as () => Array<{ time: string; value: number }>,
+      type: Number,
+      required: true,
+    },
+    minValue: {
+      type: Number,
+      required: true,
+    },
+    maxValue: {
+      type: Number,
+      required: true,
+    },
+    chartType: {
+      type: String as () => "WindDirection" | "WindSpeed",
       required: true,
     },
   },
   setup(props) {
     const canvas = ref<HTMLCanvasElement | null>(null);
     let context: CanvasRenderingContext2D | null = null;
+    const dataPoints = ref<number[]>([]);
 
+    // グリッドを描画
     const drawGrid = () => {
       if (!context) return;
 
       // 背景を白で塗りつぶす
+      context.clearRect(0, 0, 250, 80);
       context.fillStyle = "white";
       context.fillRect(0, 0, 250, 80);
 
       // フォントサイズとスタイル設定
-      context.font = "8px Arial"; // フォントサイズを8pxに設定
+      context.font = "8px Arial";
       context.fillStyle = "black";
       context.strokeStyle = "#ddd";
 
-      // 縦軸ラベルと補助線
-      const yMax = 360;
-      const chartHeight = 60; // グラフエリアの高さ（軸とラベルの余白を考慮）
-      const chartTop = 10; // 縦方向の表示開始位置（余白）
+      const chartHeight = 60; // グラフエリアの高さ
+      const chartTop = 10; // 縦方向の表示開始位置
 
-      for (let i = 0; i <= 360; i += 120) {
-        const y = chartTop + (1 - i / yMax) * chartHeight;
-        context.fillText(i.toString(), 0, y + 3); // 余白を2px確保しつつラベルを表示
+      for (
+        let i = props.minValue;
+        i <= props.maxValue;
+        i += (props.maxValue - props.minValue) / 4
+      ) {
+        const y =
+          chartTop +
+          (1 - (i - props.minValue) / (props.maxValue - props.minValue)) *
+            chartHeight;
+        context.fillText(i.toString(), 0, y + 3);
         context.beginPath();
-        context.moveTo(20, y); // 横軸の開始位置を20pxに調整
+        context.moveTo(20, y); // 横軸の開始位置
         context.lineTo(240, y);
         context.stroke();
       }
@@ -53,9 +71,7 @@ export default defineComponent({
       hours.forEach((hour, i) => {
         const x = chartLeft + (i / (hours.length - 1)) * chartWidth;
 
-        // ラベルのY座標を下に調整し、余白を確保して表示
         context.fillText(hour, x - 10, 78);
-
         context.beginPath();
         context.moveTo(x, chartTop);
         context.lineTo(x, chartTop + chartHeight);
@@ -63,6 +79,7 @@ export default defineComponent({
       });
     };
 
+    // 折れ線グラフを描画
     const drawLine = () => {
       if (!context) return;
 
@@ -71,18 +88,18 @@ export default defineComponent({
       context.lineWidth = 1;
 
       // データのスケールと座標設定
-      const yMax = 360;
       const chartHeight = 60;
       const chartTop = 10;
-      const chartWidth = 220;
       const chartLeft = 20;
-
-      const xStep = chartWidth / (props.data.length - 1);
+      const fixedXStep = 220 / (5 * 6); // グリッド1区間に6つのデータが収まるように設定
 
       context.beginPath();
-      props.data.forEach((point, i) => {
-        const x = chartLeft + xStep * i;
-        const y = chartTop + (1 - point.value / yMax) * chartHeight;
+      dataPoints.value.forEach((value, i) => {
+        const x = chartLeft + fixedXStep * i;
+        const y =
+          chartTop +
+          (1 - (value - props.minValue) / (props.maxValue - props.minValue)) *
+            chartHeight;
         if (i === 0) {
           context.moveTo(x, y);
         } else {
@@ -92,28 +109,30 @@ export default defineComponent({
       context.stroke();
     };
 
-    const renderChart = () => {
+    // グラフ全体を描画
+    const drawChart = () => {
       drawGrid();
       drawLine();
     };
 
+    // 初期設定と監視
     onMounted(() => {
       if (canvas.value) {
         context = canvas.value.getContext("2d");
-        renderChart();
+        drawChart();
       }
     });
 
-    // データが更新されるたびに再描画
     watch(
       () => props.data,
-      () => renderChart(),
-      { deep: true }
+      (newVal) => {
+        if (dataPoints.value.length >= 30) {
+          dataPoints.value.shift();
+        }
+        dataPoints.value.push(newVal);
+        drawChart();
+      }
     );
-
-    onBeforeUnmount(() => {
-      context = null;
-    });
 
     return {
       canvas,
@@ -121,9 +140,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-canvas {
-  display: block;
-}
-</style>
