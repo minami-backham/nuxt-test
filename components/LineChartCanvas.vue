@@ -30,6 +30,11 @@ export default defineComponent({
     let context: CanvasRenderingContext2D | null = null;
     const dataPoints = ref<number[]>([]);
 
+    // 横軸ラベル用の日付データ
+    const dates = ["11/1", "11/2", "11/3", "11/4", "11/5", "11/6", "11/7"];
+    // 7日間分のデータの数：6 * 24 * 7 = 1008
+    const totalDataPoints = 1008;
+
     // グリッドを描画
     const drawGrid = () => {
       if (!context) return;
@@ -64,14 +69,11 @@ export default defineComponent({
       }
 
       // 横軸ラベルと補助線
-      const hours = ["15:00", "16:00", "17:00", "18:00", "19:00", "20:00"];
-      const chartWidth = 220; // 横方向の表示エリア幅
-      const chartLeft = 20; // 横軸の表示開始位置
-
-      hours.forEach((hour, i) => {
-        const x = chartLeft + (i / (hours.length - 1)) * chartWidth;
-
-        context.fillText(hour, x - 10, 78);
+      const chartWidth = 220;
+      const chartLeft = 20;
+      dates.forEach((date, i) => {
+        const x = chartLeft + (i / (dates.length - 1)) * chartWidth;
+        context.fillText(date, x - 10, 78);
         context.beginPath();
         context.moveTo(x, chartTop);
         context.lineTo(x, chartTop + chartHeight);
@@ -91,7 +93,7 @@ export default defineComponent({
       const chartHeight = 60;
       const chartTop = 10;
       const chartLeft = 20;
-      const fixedXStep = 220 / (5 * 6); // グリッド1区間に6つのデータが収まるように設定
+      const fixedXStep = 220 / (totalDataPoints - 1); // 7日間分のデータを横幅220pxに収める
 
       context.beginPath();
       dataPoints.value.forEach((value, i) => {
@@ -126,7 +128,7 @@ export default defineComponent({
     watch(
       () => props.data,
       (newVal) => {
-        if (dataPoints.value.length >= 30) {
+        if (dataPoints.value.length >= totalDataPoints) {
           dataPoints.value.shift();
         }
         dataPoints.value.push(newVal);
