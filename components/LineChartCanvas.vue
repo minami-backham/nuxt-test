@@ -20,10 +20,6 @@ export default defineComponent({
       type: Number,
       required: true,
     },
-    chartType: {
-      type: String as () => "WindDirection" | "WindSpeed",
-      required: true,
-    },
   },
   setup(props) {
     const canvas = ref<HTMLCanvasElement | null>(null);
