@@ -1,3 +1,7 @@
+# Version
+
+Node: v20.13.1
+
 # Nuxt Minimal Starter
 
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
@@ -73,3 +77,16 @@ bun run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+## ディレクトリ構造
+
+/components
+/Chart
+/LineChart.vue - 折れ線グラフ描画用コンポーネント
+/Qr
+/QrCodeGenerator.vue - QR コード生成用コンポーネント
+/pages
+/index.vue - ログイン画面
+/tower_charts
+/index.vue - グラフ一覧画面（メイン画面）
+/public - 静的ファイル
