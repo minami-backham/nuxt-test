@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import QrCodeGenerator from "@/components/QrCodeGenerator.vue";
+import QrCodeGenerator from "~/components/Qr/QrCodeGenerator.vue";
 
 const url = ref<string>("");
 

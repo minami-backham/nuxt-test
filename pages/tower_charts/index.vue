@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
-import LineChartCanvas from "@/components/LineChartCanvas.vue";
+import LineChart from "~/components/Chart/LineChart.vue";
 
 interface Field {
   value: number;
@@ -23,7 +23,7 @@ interface WeatherForcast {
 
 export default defineComponent({
   components: {
-    LineChartCanvas,
+    LineChart,
   },
   setup() {
     const weatherForcast = ref<WeatherForcast>({
@@ -175,25 +175,25 @@ export default defineComponent({
       <!-- 経過時間表示 -->
       <p>経過時間：{{ elapsedTime }}</p>
       <p>気温</p>
-      <LineChartCanvas
+      <LineChart
         :data="weatherForcast.temperature.value"
         :minValue="-5"
         :maxValue="35"
       />
       <p>気圧</p>
-      <LineChartCanvas
+      <LineChart
         :data="weatherForcast.atmosphericPressure.value"
         :minValue="950"
         :maxValue="1050"
       />
       <p>降水量</p>
-      <LineChartCanvas
+      <LineChart
         :data="weatherForcast.precipitation.value"
         :minValue="0"
         :maxValue="200"
       />
       <p>湿度</p>
-      <LineChartCanvas
+      <LineChart
         :data="weatherForcast.humidity.value"
         :minValue="0"
         :maxValue="100"
@@ -210,14 +210,14 @@ export default defineComponent({
 
         <div v-for="i in 4" :key="i">
           <p>風向</p>
-          <LineChartCanvas
+          <LineChart
             :data="deviceData.fields[`WindDirection(${i})`].value"
             :minValue="0"
             :maxValue="360"
             chartType="WindDirection"
           />
           <p>風速</p>
-          <LineChartCanvas
+          <LineChart
             :data="deviceData.fields[`WindSpeed(${i})`].value"
             :minValue="0"
             :maxValue="20"
