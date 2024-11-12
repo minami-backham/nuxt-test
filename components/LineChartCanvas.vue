@@ -1,7 +1,3 @@
-<template>
-  <canvas ref="canvas" :width="250" :height="80"></canvas>
-</template>
-
 <script lang="ts">
 import { defineComponent, onMounted, ref, watch } from "vue";
 
@@ -138,3 +134,7 @@ export default defineComponent({
   },
 });
 </script>
+
+<template>
+  <canvas ref="canvas" :width="250" :height="80"></canvas>
+</template>

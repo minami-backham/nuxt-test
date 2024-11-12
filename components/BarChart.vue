@@ -1,10 +1,3 @@
-<template>
-  <div>
-    <p>横棒グラフの表示</p>
-    <div ref="chartDiv" style="width: 100%; height: 400px"></div>
-  </div>
-</template>
-
 <script lang="ts" setup>
 import { onMounted, onBeforeUnmount, ref } from "vue";
 import * as am5 from "@amcharts/amcharts5";
@@ -79,3 +72,9 @@ onBeforeUnmount(() => {
   }
 });
 </script>
+
+<template>
+  <div>
+    <div ref="chartDiv" style="width: 100%; height: 400px"></div>
+  </div>
+</template>

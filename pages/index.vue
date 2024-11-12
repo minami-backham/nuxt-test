@@ -1,64 +1,3 @@
-<template>
-  <div class="container flex gap-x-8 p-2">
-    <!-- 左サイド -->
-    <div>
-      <!-- 経過時間表示 -->
-      <p>経過時間：{{ elapsedTime }}</p>
-      <p>気温</p>
-      <LineChartCanvas
-        :data="weatherForcast.temperature.value"
-        :minValue="-5"
-        :maxValue="35"
-      />
-      <p>気圧</p>
-      <LineChartCanvas
-        :data="weatherForcast.atmosphericPressure.value"
-        :minValue="950"
-        :maxValue="1050"
-      />
-      <p>降水量</p>
-      <LineChartCanvas
-        :data="weatherForcast.precipitation.value"
-        :minValue="0"
-        :maxValue="200"
-      />
-      <p>湿度</p>
-      <LineChartCanvas
-        :data="weatherForcast.humidity.value"
-        :minValue="0"
-        :maxValue="100"
-      />
-    </div>
-    <!-- メイン画面 -->
-    <div>
-      <div
-        v-for="(deviceData, index) in devices"
-        :key="index"
-        class="container flex justify-center"
-      >
-        <p>デバイス{{ index + 1 }}</p>
-
-        <div v-for="i in 4" :key="i">
-          <p>風向</p>
-          <LineChartCanvas
-            :data="deviceData.fields[`WindDirection(${i})`].value"
-            :minValue="0"
-            :maxValue="360"
-            chartType="WindDirection"
-          />
-          <p>風速</p>
-          <LineChartCanvas
-            :data="deviceData.fields[`WindSpeed(${i})`].value"
-            :minValue="0"
-            :maxValue="20"
-            chartType="WindSpeed"
-          />
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
 import LineChartCanvas from "@/components/LineChartCanvas.vue";
@@ -228,3 +167,64 @@ export default defineComponent({
   },
 });
 </script>
+
+<template>
+  <div class="container flex gap-x-8 p-2">
+    <!-- 左サイド -->
+    <div>
+      <!-- 経過時間表示 -->
+      <p>経過時間：{{ elapsedTime }}</p>
+      <p>気温</p>
+      <LineChartCanvas
+        :data="weatherForcast.temperature.value"
+        :minValue="-5"
+        :maxValue="35"
+      />
+      <p>気圧</p>
+      <LineChartCanvas
+        :data="weatherForcast.atmosphericPressure.value"
+        :minValue="950"
+        :maxValue="1050"
+      />
+      <p>降水量</p>
+      <LineChartCanvas
+        :data="weatherForcast.precipitation.value"
+        :minValue="0"
+        :maxValue="200"
+      />
+      <p>湿度</p>
+      <LineChartCanvas
+        :data="weatherForcast.humidity.value"
+        :minValue="0"
+        :maxValue="100"
+      />
+    </div>
+    <!-- メイン画面 -->
+    <div>
+      <div
+        v-for="(deviceData, index) in devices"
+        :key="index"
+        class="container flex justify-center"
+      >
+        <p>デバイス{{ index + 1 }}</p>
+
+        <div v-for="i in 4" :key="i">
+          <p>風向</p>
+          <LineChartCanvas
+            :data="deviceData.fields[`WindDirection(${i})`].value"
+            :minValue="0"
+            :maxValue="360"
+            chartType="WindDirection"
+          />
+          <p>風速</p>
+          <LineChartCanvas
+            :data="deviceData.fields[`WindSpeed(${i})`].value"
+            :minValue="0"
+            :maxValue="20"
+            chartType="WindSpeed"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

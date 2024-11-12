@@ -1,10 +1,3 @@
-// QrCodeGenerator.vue
-<template>
-  <div class="flex flex-col items-center">
-    <canvas ref="qrCanvas"></canvas>
-  </div>
-</template>
-
 <script lang="ts" setup>
 import { ref, watch, onMounted } from "vue";
 import QRCode from "qrcode";
@@ -34,3 +27,9 @@ onMounted(() => {
   if (props.url) generateQRCode(props.url);
 });
 </script>
+
+<template>
+  <div class="flex flex-col items-center">
+    <canvas ref="qrCanvas"></canvas>
+  </div>
+</template>

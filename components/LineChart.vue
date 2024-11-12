@@ -1,7 +1,3 @@
-<template>
-  <div ref="chartDiv" style="width: 250px; height: 78px"></div>
-</template>
-
 <script lang="ts">
 import { defineComponent, onMounted, onBeforeUnmount, ref } from "vue";
 import * as am5 from "@amcharts/amcharts5";
@@ -94,6 +90,10 @@ export default defineComponent({
   },
 });
 </script>
+
+<template>
+  <div ref="chartDiv" style="width: 250px; height: 78px"></div>
+</template>
 
 <style scoped>
 /* 必要に応じてスタイルを調整 */
