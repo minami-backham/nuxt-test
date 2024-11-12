@@ -65,11 +65,13 @@ export default defineComponent({
       const chartLeft = 20;
       dates.forEach((date, i) => {
         const x = chartLeft + (i / (dates.length - 1)) * chartWidth;
-        context.fillText(date, x - 10, 78);
-        context.beginPath();
-        context.moveTo(x, chartTop);
-        context.lineTo(x, chartTop + chartHeight);
-        context.stroke();
+        if (context) {
+          context.fillText(date, x - 10, 78);
+          context.beginPath();
+          context.moveTo(x, chartTop);
+          context.lineTo(x, chartTop + chartHeight);
+          context.stroke();
+        }
       });
     };
 
@@ -95,9 +97,9 @@ export default defineComponent({
           (1 - (value - props.minValue) / (props.maxValue - props.minValue)) *
             chartHeight;
         if (i === 0) {
-          context.moveTo(x, y);
+          if (context) context.moveTo(x, y);
         } else {
-          context.lineTo(x, y);
+          if (context) context.lineTo(x, y);
         }
       });
       context.stroke();
