@@ -9,4 +9,11 @@ export default defineNuxtConfig({
     strict: true, // 厳格な型チェックを有効化
     typeCheck: true, // 型チェックを有効化
   },
+  css: ["@/assets/css/tailwind.css"],
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
 });
