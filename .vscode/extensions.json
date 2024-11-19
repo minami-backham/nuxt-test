@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "johnsoncodehk.volar", // Volar (Vue3専用)
+    "dbaeumer.vscode-eslint", // ESLint
+    "esbenp.prettier-vscode", // Prettier - Code formatter
+    "bradlc.vscode-tailwindcss" // Tailwind CSS IntelliSense
+  ]
+}

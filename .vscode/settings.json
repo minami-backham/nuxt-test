@@ -1,0 +1,12 @@
+{
+  "prettier.printWidth": 80,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  // TailwindCSS
+  "files.associations": {
+    "*.css": "tailwindcss"
+  }
+}
