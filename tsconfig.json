@@ -6,8 +6,10 @@
     "baseUrl": ".", // 相対パスの基準ディレクトリ
     "paths": {
       "~/*": ["./*"],
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "vue": ["./node_modules/vue"]
     },
-    "skipLibCheck": true // 外部ライブラリの型チェックをスキップ
+    "skipLibCheck": true, // 外部ライブラリの型チェックをスキップ
+    "moduleResolution": "node"
   }
 }

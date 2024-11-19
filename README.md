@@ -81,12 +81,19 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 ## ディレクトリ構造
 
 /components
-/Chart
-/LineChart.vue - 折れ線グラフ描画用コンポーネント
-/Qr
-/QrCodeGenerator.vue - QR コード生成用コンポーネント
+--/Chart
+---/LineChart.vue - 折れ線グラフ描画用コンポーネント
+--/Qr
+---/QrCodeGenerator.vue - QR コード生成用コンポーネント
+/composables
+--/useWeather.ts - 気象データ取得用カスタムフック
 /pages
-/index.vue - ログイン画面
-/tower_charts
-/index.vue - グラフ一覧画面（メイン画面）
+--/index.vue - ログイン画面
+--/tower_charts
+---/index.vue - グラフ一覧画面（メイン画面）
 /public - 静的ファイル
+/server - サーバー関連ファイル
+--/api - API エンドポイント
+---/weather.ts - 気象データ取得用 API
+/types - 型定義ファイル
+--/weatherTypes.ts - 気象データ用型定義
