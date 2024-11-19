@@ -77,15 +77,16 @@ export default defineComponent({
     };
 
     let offset = Math.random() * 1000; // 乱数のオフセット（滑らかさに影響）
-    let frequency = 0.01; // 周波数（滑らかさに影響）
+    let frequency = 0.5; // 周波数（滑らかさに影響）
 
-    // 滑らかなノイズを生成する関数
+    // 滑らかなノイズを生成する関数：気温、気圧、降水量、湿度のデータ更新に使用
     const smoothNoise = (x: any, min: number, max: number) => {
       const amplitude = (max - min) / 2;
       const center = (max + min) / 2;
       return Math.sin(x * frequency + offset) * amplitude + center;
     };
 
+    // デバイスごとのデータを更新する関数
     const updateDataFields = () => {
       devices.value.forEach((deviceData) => {
         const _deviceData = { ...deviceData };
@@ -120,28 +121,34 @@ export default defineComponent({
       if (!weather.value) return;
 
       const _weather = { ...weather.value };
+      // 気温
       _weather.data.temperature = smoothNoise(
         new Date().getTime() / 1000,
-        -5,
-        35
+        15,
+        24
       );
-      _weather.data.humidity = smoothNoise(new Date().getTime() / 1000, 30, 80);
+      // 湿度
+      _weather.data.humidity = smoothNoise(new Date().getTime() / 1000, 30, 60);
+      // 気圧
       _weather.data.atmosphericPressure = smoothNoise(
         new Date().getTime() / 1000,
-        990,
-        1030
+        1010,
+        1020
       );
+      // 降水量
       _weather.data.precipitation = smoothNoise(
         new Date().getTime() / 1000,
-        0,
-        150
+        5,
+        15
       );
+
+      weather.value = _weather;
     };
 
     // 経過時間を管理するリアクティブ変数
     const elapsedTime = ref("00:00:00");
     let startTime: number;
-    let timerId: any;
+    let timerId: ReturnType<typeof setInterval>;
 
     // 経過時間を更新する関数
     const updateElapsedTime = () => {
@@ -166,14 +173,15 @@ export default defineComponent({
     onMounted(() => {
       fetchWeather(); // 天気データの初回取得
       intervalId = setInterval(updateWeather, 3000); // 天気データの更新
-      setInterval(updateDataFields, 3000);
+      setInterval(updateDataFields, 3000); // デバイスごとのデータ更新
       startTime = new Date().getTime();
-      timerId = setInterval(updateElapsedTime, 1000);
+      timerId = setInterval(updateElapsedTime, 1000); // 経過時間の更新
     });
 
     // コンポーネントが破棄されるときにIntervalをクリア
     onBeforeUnmount(() => {
       if (intervalId) clearInterval(intervalId);
+      if (timerId) clearInterval(timerId);
     });
 
     return {
