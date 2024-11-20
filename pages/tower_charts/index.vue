@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref, onBeforeMount, onMounted } from "vue";
 
 import { useWeather } from "@/composables/useWeather";
 import type { Weather } from "@/types/weatherTypes";
@@ -28,6 +28,7 @@ export default defineComponent({
     const pending = ref(false);
     const error = ref<Error | null>(null);
 
+    /* methods */
     // 天気データを取得する関数
     const fetchWeather = async () => {
       pending.value = true;
@@ -68,8 +69,7 @@ export default defineComponent({
     };
 
     const dataArr = generateData(15);
-
-    const devices = ref<Data[]>([...dataArr]); // デバイスごとのデータを保持
+    const devices = ref<Data[]>([...dataArr]); // デバイスごとのデータ
 
     // 乱数を生成する関数
     const generateRandomValue = (min: number, max: number) => {
@@ -170,8 +170,14 @@ export default defineComponent({
 
     let intervalId: ReturnType<typeof setInterval>;
 
+    /* lifecycle hooks */
+    onBeforeMount(async () => {
+      // 0.5秒後に天気データの初回取得
+      setTimeout(async () => {
+        await fetchWeather(); // 天気データの初回取得
+      }, 500);
+    });
     onMounted(() => {
-      fetchWeather(); // 天気データの初回取得
       intervalId = setInterval(updateWeather, 3000); // 天気データの更新
       setInterval(updateDataFields, 3000); // デバイスごとのデータ更新
       startTime = new Date().getTime();
@@ -188,6 +194,8 @@ export default defineComponent({
       devices,
       elapsedTime,
       weather,
+      pending,
+      error,
     };
   },
 });
@@ -196,37 +204,52 @@ export default defineComponent({
 <template>
   <div class="container flex gap-x-8 p-2">
     <!-- 左サイド -->
-    <div v-if="weather">
+    <div>
       <!-- 経過時間表示 -->
       <p>経過時間：{{ elapsedTime }}</p>
-      <ul>
-        <li>
-          気温：{{ weather.data.temperature }}<br />
-          湿度：{{ weather.data.humidity }}<br />
-          降水量：{{ weather.data.precipitation }}<br />
-          気圧：{{ weather.data.atmosphericPressure }}
-        </li>
-      </ul>
-      <p>気温</p>
-      <LineChart
-        :data="weather.data.temperature"
-        :minValue="-5"
-        :maxValue="35"
-      />
-      <p>気圧</p>
-      <LineChart
-        :data="weather.data.atmosphericPressure"
-        :minValue="950"
-        :maxValue="1050"
-      />
-      <p>降水量</p>
-      <LineChart
-        :data="weather.data.precipitation"
-        :minValue="0"
-        :maxValue="200"
-      />
-      <p>湿度</p>
-      <LineChart :data="weather.data.humidity" :minValue="0" :maxValue="100" />
+
+      <!-- ローディング表示を追加 -->
+      <div v-if="pending">データを読み込み中...</div>
+
+      <!-- エラー時の表示を追加 -->
+      <div v-else-if="error">データの取得に失敗しました。</div>
+
+      <div v-else-if="weather">
+        <ul>
+          <li>
+            気温：{{ weather.data.temperature }}<br />
+            湿度：{{ weather.data.humidity }}<br />
+            降水量：{{ weather.data.precipitation }}<br />
+            気圧：{{ weather.data.atmosphericPressure }}
+          </li>
+        </ul>
+        <div>
+          <p>気温</p>
+          <LineChart
+            :data="weather.data.temperature"
+            :minValue="-5"
+            :maxValue="35"
+          />
+          <p>気圧</p>
+          <LineChart
+            :data="weather.data.atmosphericPressure"
+            :minValue="950"
+            :maxValue="1050"
+          />
+          <p>降水量</p>
+          <LineChart
+            :data="weather.data.precipitation"
+            :minValue="0"
+            :maxValue="200"
+          />
+          <p>湿度</p>
+          <LineChart
+            :data="weather.data.humidity"
+            :minValue="0"
+            :maxValue="100"
+          />
+        </div>
+      </div>
     </div>
     <!-- メイン画面 -->
     <div>
